@@ -1,0 +1,18 @@
+services:
+  expressjs:
+    build: .
+    ports:
+      - "3080:3000"
+    volumes:
+      - .:/app
+    tty: true
+    container_name: expressjs
+
+  # sqllite-db:
+  #   build:
+  #     context: .
+  #     dockerfile: SqlLite.Dockerfile
+  #   container_name: sqllite-db
+  #   tty: true
+  #   volumes:
+  #     - ./db:/app/db 
