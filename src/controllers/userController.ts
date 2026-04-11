@@ -1,38 +1,45 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction} from "express";
 
 
 import {db} from "../database/dbConnection.js"
 
 import {users} from "../database/schema.js";
 
-import {User} from "../models/User.js";
+import {User} from "../requests/User.js";
+import { desc } from "drizzle-orm";
+import { error } from "console";
 
 
-const saveUser = async(request: Request, response: Response) => {
-    
-    // console.log(process.env.DATABASE_URL);
-    // await db.insert(users).values({ 
-    //     name: 'Andrew', 
-    //     age: 25 
-    //   });
-    // const result = await db.all('select * from users');
-    // console.log('result');
-    // console.log(result);
-    // const arr = new Map();
-    // arr.set('id', 1);
-    // console.log('==hhhh==');
+const saveUser = async(request: Request, response: Response, next:NextFunction ) => {
     try {
+        console.log(request.body);
         await User.parseAsync({ name: request.body.name, email: request.body.email }); 
 
         await db.insert(users).values({
-            name: 'Andrew',
-            email: 'andrew@example.com'
+            name: request.body.name,
+            email: request.body.email
         });
-        return response.json({'id':2});
-    } catch (Execption ex) {
+
+        const userData = await db.select().from(users).orderBy(desc(users.id))
+        .limit(1);
         
+        if (!userData) {
+            throw new Error("could not insert data!");
+        }
+        return response.json(userData);
+    } catch (error) {
+        next(error);
     }
     
 }
 
-export {saveUser};
+const getUser =  async (request: Request, response: Response, next:NextFunction) => {
+    const userData = await db.select().from(users);
+    
+    if (!userData) {
+        throw new Error("could not get data!");
+    }
+    return response.json(userData);
+}
+
+export {saveUser, getUser};

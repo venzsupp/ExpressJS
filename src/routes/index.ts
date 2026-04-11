@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {saveUser} from "../controllers/userController.js";
+import {saveUser, getUser} from "../controllers/userController.js";
 
 const router = Router();
 
@@ -10,5 +10,6 @@ router.get("/health", (req, res) => {
 });
 
 router.post("/user", saveUser);
+router.get("/user", getUser);
 
 export default router;
