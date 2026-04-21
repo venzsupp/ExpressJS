@@ -8,26 +8,28 @@ import {users} from "../database/schema.js";
 import {User} from "../requests/User.js";
 import { desc } from "drizzle-orm";
 import { error } from "console";
+import sqlQueryProcessor from "../database/sqlQueryProcessor.js"
 
 
 const saveUser = async(request: Request, response: Response, next:NextFunction ) => {
     try {
         console.log(request.body);
         await User.parseAsync({ name: request.body.name, email: request.body.email }); 
-
-        await db.insert(users).values({
-            name: request.body.name,
-            email: request.body.email
-        });
-
-        const userData = await db.select().from(users).orderBy(desc(users.id))
-        .limit(1);
-        
-        if (!userData) {
+        const { name, email } = request.body;
+        const data = {
+                name ,
+                email
+            };
+        if (!request.body.name || !request.body.email) {
+            throw new Error("Missing fields");
+        }
+        const resId = await sqlQueryProcessor('insert', users, { name: request.body.name.toString() , email: request.body.email.toString() } ,users.id);
+        if (!resId) {
             throw new Error("could not insert data!");
         }
-        return response.json(userData);
+        return response.json({"data":resId});
     } catch (error) {
+        console.error(error);
         next(error);
     }
     
