@@ -5,4 +5,4 @@ const User = z.object({
     email: z.email()
   });
 
-  export {User};
+export {User};
