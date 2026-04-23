@@ -14,3 +14,8 @@
 
 # npx drizzle-kit migrate
 
+## general text
+
+# const res = userData.filter(u => u.id > 5);
+# const res1 = userData.map(u => { if (u.id >5) { u.name = u.name+'--test' } return u});
+
