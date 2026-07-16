@@ -6,6 +6,14 @@
 
 # npx tsc --init
 
+# npm install -g nodemon
+
+# npm install -D typescript ts-node @types/node
+
+# npm install -g -D tsx
+
+
+
 # npm i drizzle-orm @libsql/client dotenv
 
 # npm i -D drizzle-kit tsx
